@@ -176,7 +176,11 @@ size_t locate(idx_t& idx, kseq_t* seq, ri_opts_t opts, vector<sam_t>& sams) {
                 sam->query = std::string(seq->name.s);
                 sam->CIGAR = std::to_string(m) + "M";
                 sam->seq = std::string(seq->seq.s);
-                sam->qual = std::string(seq->qual.s);
+                if (seq->qual.l) {
+                    sam->qual = std::string(seq->qual.s);
+                } else {
+                    sam->qual = "*";
+                }
                 sam->flag  = ls.size() ? 0 : 4;
                 std::ostringstream tag_stream;
                 // add tags here
@@ -216,7 +220,11 @@ size_t piecewise_locate(idx_t& idx, kseq_t* seq, ri_opts_t opts, vector<sam_t>& 
             uint m = P.size();
             sam_t sam;
             sam.query = std::string(seq->name.s);
-            sam.qual = std::string(seq->qual.s);
+            if (seq->qual.l) {
+                sam.qual = std::string(seq->qual.s);
+            } else {
+                sam.qual = "*";
+            }
             sam.seq = std::string(seq->seq.s);
             if (end-start+1) {
                 std::ostringstream CIGAR_stream;
