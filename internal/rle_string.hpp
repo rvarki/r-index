@@ -166,7 +166,7 @@ public:
         for(size_t i = 0; i < run_heads_s.size(); ++i)
         {
             size_t length;
-            lengths.read((char*)length, 5);
+            lengths.read((char*)&length, 5);
             if(run_heads_s[i]>TERMINATOR) // change 0 to 1
                 run_heads_s[i]=TERMINATOR;
 
