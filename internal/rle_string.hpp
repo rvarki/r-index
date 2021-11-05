@@ -141,6 +141,60 @@ public:
         assert(run_heads.size()==R);
     }
 
+    // Construction from run-length encoded BWT
+    rle_string(std::ifstream& heads, std::ifstream& lengths, ulint B = 2) {
+        heads.clear(); heads.seekg(0);
+        lengths.clear(); lengths.seekg(0);
+        // assert(not contains0(input)); // We're hacking the 0 away :)
+        this->B = B;
+        // n = input.size();
+        auto runs_per_letter_bv = vector<vector<bool> >(256);
+        //runs in main bitvector
+        vector<bool> runs_bv;
+
+        // Reads the run heads
+        string run_heads_s;
+        heads.seekg(0, heads.end);
+        run_heads_s.resize(heads.tellg());
+        heads.seekg(0, heads.beg);
+        heads.read(&run_heads_s[0], run_heads_s.size());
+
+        size_t pos = 0;
+        n = 0;
+        R = run_heads_s.size();
+        // Compute runs_bv and runs_per_letter_bv
+        for(size_t i = 0; i < run_heads_s.size(); ++i)
+        {
+            size_t length;
+            lengths.read((char*)length, 5);
+            if(run_heads_s[i]>TERMINATOR) // change 0 to 1
+                run_heads_s[i]=TERMINATOR;
+
+            std::fill_n( std::back_inserter(runs_bv), length-1, false);
+            runs_bv.push_back(i%B==B-1);
+
+            std::fill_n( std::back_inserter(runs_per_letter_bv[run_heads_s[i]]), length-1, false);
+            runs_per_letter_bv[run_heads_s[i]].push_back(true);
+
+            n += length;
+        }
+        runs_bv.push_back(false);
+
+        //now compact structures
+        assert(runs_bv.size()==n);
+        ulint t = 0;
+        for(ulint i=0;i<256;++i)
+            t += runs_per_letter_bv[i].size();
+        assert(t==n);
+        runs = sparse_bitvector_t(runs_bv);
+        //a fast direct array: char -> bitvector.
+        runs_per_letter = vector<sparse_bitvector_t>(256);
+        for(ulint i=0;i<256;++i)
+            runs_per_letter[i] = sparse_bitvector_t(runs_per_letter_bv[i]);
+        run_heads = string_t(run_heads_s);
+        assert(run_heads.size()==run_heads_s.size());
+    }
+
     uchar operator[](ulint i){
         assert(i<n);
         return run_heads[run_of(i).first];
