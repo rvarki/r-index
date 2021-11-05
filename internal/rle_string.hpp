@@ -178,7 +178,7 @@ public:
 
             n += length;
         }
-        runs_bv.push_back(false);
+        // runs_bv.push_back(false);
 
         //now compact structures
         assert(runs_bv.size()==n);
