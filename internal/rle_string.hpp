@@ -167,7 +167,7 @@ public:
         {
             size_t length;
             lengths.read((char*)&length, 5);
-            if(run_heads_s[i]>TERMINATOR) // change 0 to 1
+            if(run_heads_s[i]<=TERMINATOR) // change 0 to 1
                 run_heads_s[i]=TERMINATOR;
 
             std::fill_n( std::back_inserter(runs_bv), length-1, false);
