@@ -192,7 +192,7 @@ public:
         for(ulint i=0;i<256;++i)
             runs_per_letter[i] = sparse_bitvector_t(runs_per_letter_bv[i]);
         run_heads = string_t(run_heads_s);
-        assert(run_heads.size()==run_heads_s.size());
+        assert(run_heads.size()==R);
     }
 
     uchar operator[](ulint i){
