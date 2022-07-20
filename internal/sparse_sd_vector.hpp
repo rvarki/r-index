@@ -35,7 +35,7 @@ public:
 	/*
 	 * constructor. build bitvector given a vector of bools
 	 */
-	sparse_sd_vector(vector<bool> &b){
+	sparse_sd_vector(const vector<bool> &b){
 
 		if(b.size()==0) return;
 
@@ -55,7 +55,7 @@ public:
 	/*
 	 * constructor. build bitvector given the onset as a vector of size_t and its length
 	 */
-	sparse_sd_vector(vector<size_t> &onset, size_t n){
+	sparse_sd_vector(const vector<size_t> &onset, size_t n){
 
 		if(n==0) return;
 
@@ -74,7 +74,7 @@ public:
 	/*
 	 * constructor. build bitvector given a bit_vector
 	 */
-	sparse_sd_vector(bit_vector &bv){
+	sparse_sd_vector(const bit_vector &bv){
 
 		sdv = sd_vector<>(bv);
 		rank1 = sd_vector<>::rank_1_type(&sdv);
@@ -104,7 +104,7 @@ public:
 	 * returns: bit in position i
 	 * only access! the bitvector is static.
 	 */
-	bool operator[](ulint i){
+	inline bool operator[](ulint i) const {
 
 		assert(i<size());
 		return sdv[i];
@@ -119,7 +119,7 @@ public:
 	 * argument: position i in the bitvector
 	 * returns: number of bits equal to 1 before position i excluded
 	 */
-	ulint rank(ulint i){
+	inline ulint rank(ulint i) const{
 
 		assert(i<=size());
 		return rank1(i);
@@ -131,7 +131,7 @@ public:
 	 * output: predecessor of i (position i excluded) in
 	 * rank space (apply select to get bitvector space)
 	 */
-	ulint predecessor_rank(ulint i){
+	inline ulint predecessor_rank(ulint i) const{
 
 		/*
 		 * i must have a predecessor
@@ -147,7 +147,7 @@ public:
 	 * output: predecessor of i (i excluded) in
 	 * bitvector space
 	 */
-	ulint predecessor(ulint i){
+	inline ulint predecessor(ulint i) const {
 
 		/*
 		 * i must have a predecessor
@@ -165,7 +165,7 @@ public:
 	 * bitvector space. If i does not have a predecessor,
 	 * return rank of the last bit set in the bitvector
 	 */
-	ulint predecessor_rank_circular(ulint i){
+	inline ulint predecessor_rank_circular(ulint i) const {
 
 		return rank(i)==0 ? number_of_1()-1 : rank(i)-1;
 
@@ -176,7 +176,7 @@ public:
 	 * \param i<number_of_1()
 	 *
 	 */
-	ulint gapAt(ulint i){
+	inline ulint gapAt(ulint i) const{
 
 		assert(i<number_of_1());
 
@@ -190,7 +190,7 @@ public:
 	 * argument: integer i>0
 	 * returns: position of the i-th one in the bitvector. i starts from 0!
 	 */
-	ulint select(ulint i){
+	inline ulint select(ulint i) const{
 
 		assert(i<number_of_1());
 		return select1(i+1);//in sd_vector, i starts from 1
@@ -200,17 +200,17 @@ public:
 	/*
 	* returns: size of the bitvector
 	*/
-	ulint size(){return u;}
+	inline ulint size() const {return u;}
 
 	/*
 	 * returns: number of 1s in the bitvector
 	 */
-	ulint number_of_1(){return rank1(size()); }
+	inline ulint number_of_1() const {return rank1(size()); }
 
 	/* serialize the structure to the ostream
 	 * \param out	 the ostream
 	 */
-	ulint serialize(std::ostream& out){
+	inline ulint serialize(std::ostream& out) const {
 
 		ulint w_bytes = 0;
 
