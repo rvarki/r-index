@@ -105,6 +105,9 @@ int main(int argc, char** argv) {
         std::string input(read_fasta(args.input_fname));
         std::cout << "building forward index using sais" << std::endl;
         idx.init_sais(input,true);
+        std::string fai_path(args.outpre + ".1.ri");
+        std::cout << "generating faidx of sequences, saving to" << fai_path << std::endl;
+        ri::build_seqidx(args.input_fname.c_str(), fai_path.c_str());
     } else if (args.bwt_alg == "bigbwt") {
         std::cout << "building forward index using bigbwt" << std::endl;
         idx.init_bigbwt(args.input_fname, args.threads);

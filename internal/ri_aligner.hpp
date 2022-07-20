@@ -91,7 +91,8 @@ namespace ri {
                 }
                 if (!load_seqidx(seq_idx)) {
                     cerr << seq_idx << " does not exist. output will default to offset into full BWT\n";
-                }
+                    fai = false;
+                } else fai = true;
             }
 
             bool load_fwd(std::string fname) {
@@ -129,9 +130,12 @@ namespace ri {
                 std::vector<uint64_t> seq_pos;
                 uint64_t prev_pos = 0;
                 uint64_t pos;
+                int x = 1;
                 while (in >> seq_name >> pos) {
                     seq_names.push_back(seq_name);
                     seq_pos.push_back(pos);
+                    max_rank = x;
+                    x += 1;
                 }
                 seq_bounds = std::move(sdsl::sd_vector<>(seq_pos.begin(), seq_pos.end()));
                 seq_rank = sdsl::sd_vector<>::rank_1_type(&seq_bounds);
@@ -269,14 +273,27 @@ namespace ri {
             }
 
             std::tuple<std::string, uint64_t> resolve_offset(uint64_t x) {
-                size_t rank = seq_rank(x);
-                size_t offset = x - seq_sel(rank);
+                if (!fai) return make_tuple("seq", x);
+                size_t offset;
+                size_t rank;
+                if (x > seq_rank.size()) {
+                    rank = max_rank;
+                    offset = x - seq_sel(max_rank);
+                }
+                else {
+                    rank = seq_rank(x);
+                    offset = x - seq_sel(rank);
+                }
                 return std::tuple<std::string, uint64_t>(seq_names[rank-1], offset);
             }
 
 
             std::vector< std::pair<std::string, uint64_t> > get_ref_names_and_lengths() {
                 std::vector<std::pair<std::string, uint64_t>> lengths;
+                if (!fai) {
+                    lengths.push_back(std::make_pair("seq", 0));
+                    return lengths;
+                }
                 uint64_t prev_pos = 0;
                 for (auto i = 0; i < seq_names.size() - 1; ++i) {
                     auto x = seq_sel(i + 2);
@@ -399,6 +416,7 @@ namespace ri {
             sdsl::sd_vector<>::select_1_type seq_sel;
             bool rev_loaded = false;
             bool fai = false;
+            int max_rank = 0;
             uint mms = 1;
             uint gos = 0;
             uint ges = 0;
