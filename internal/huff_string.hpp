@@ -32,18 +32,18 @@ public:
 
 	}
 
-	uchar operator[](ulint i){
+	inline uchar operator[](ulint i) const{
 
 		assert(i<wt.size());
 		return wt[i];
 
 	}
 
-	ulint size(){
+	inline ulint size() const{
 		return wt.size();
 	}
 
-	ulint rank(ulint i, uchar c){
+	inline ulint rank(ulint i, uchar c) const{
 
 		assert(i<=wt.size());
 		return wt.rank(i,c);
@@ -53,7 +53,7 @@ public:
 	/*
 	 * position of i-th character c. i starts from 0!
 	 */
-	ulint select(ulint i, uchar c){
+	inline ulint select(ulint i, uchar c) const{
 
 		return wt.select(i+1,c);
 
@@ -62,7 +62,7 @@ public:
 	/* serialize the structure to the ostream
 	 * \param out	 the ostream
 	 */
-	ulint serialize(std::ostream& out){
+	inline ulint serialize(std::ostream& out) const{
 
 		return wt.serialize(out);
 
