@@ -281,7 +281,7 @@ namespace ri {
                     offset = x - seq_sel(max_rank);
                 }
                 else {
-                    rank = seq_rank(x);
+                    rank = seq_rank(x+1);
                     offset = x - seq_sel(rank);
                 }
                 return std::tuple<std::string, uint64_t>(seq_names[rank-1], offset);

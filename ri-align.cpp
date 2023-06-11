@@ -154,6 +154,7 @@ size_t count(idx_t& idx, kseq_t* seq, ri_opts_t opts, vector<sam_t>& sam) {
     sam.clear();
     ulint count = 0;
     std::string s = std::string(seq->seq.s);
+    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
     // auto range = idx.exact_count(s);
     range_t range;
     ulint suffix_size;
