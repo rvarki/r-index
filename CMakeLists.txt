@@ -81,6 +81,7 @@ endif()
 FetchContent_Declare(
   klib
   GIT_REPOSITORY https://github.com/attractivechaos/klib
+  GIT_TAG 9a063b33efd841fcc42d4b9f68cb78bb528bf75b
 )
 
 FetchContent_GetProperties(klib)
