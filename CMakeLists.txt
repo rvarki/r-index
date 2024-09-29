@@ -16,18 +16,22 @@ include_directories(${PROJECT_SOURCE_DIR}/internal)
 
 set(CMAKE_INSTALL_INCLUDEDIR "include") # This is an hack because include(GUIInstallDirs) doesn't work
 include(FetchContent)
+
 ## Add Big-BWT
-FetchContent_Declare(
-  bigbwt
-  GIT_REPOSITORY https://github.com/alshai/Big-BWT.git
-  )
+if (NOT bigbwt_POPULATED)
+  FetchContent_Declare(
+    bigbwt
+    GIT_REPOSITORY https://github.com/alshai/Big-BWT.git
+    )
   
-FetchContent_GetProperties(bigbwt)
-if(NOT bigbwt_POPULATED)
-  FetchContent_Populate(bigbwt)
-  add_subdirectory(${bigbwt_SOURCE_DIR} ${bigbwt_BINARY_DIR})
-    
+  FetchContent_GetProperties(bigbwt)
+  if(NOT bigbwt_POPULATED)
+    message(STATUS "BIG-BWT is BUILDING!!!!")
+    FetchContent_Populate(bigbwt)
+    add_subdirectory(${bigbwt_SOURCE_DIR} ${bigbwt_BINARY_DIR})
+      
   endif()
+endif()
 
 # check for SDSL
 find_library(SDSL_LIB sdsl)
@@ -78,22 +82,23 @@ else()
 endif()
 
 ## Add klib
-FetchContent_Declare(
-  klib
-  GIT_REPOSITORY https://github.com/attractivechaos/klib
-  GIT_TAG 9a063b33efd841fcc42d4b9f68cb78bb528bf75b
-)
+if (NOT TARGET klib)
+  FetchContent_Declare(
+    klib
+    GIT_REPOSITORY https://github.com/attractivechaos/klib
+    GIT_TAG 9a063b33efd841fcc42d4b9f68cb78bb528bf75b
+  )
 
-FetchContent_GetProperties(klib)
-if(NOT klib_POPULATED)
-  FetchContent_Populate(klib)
-  
-  # add_subdirectory(${klib_SOURCE_DIR} ${klib_BINARY_DIR} EXCLUDE_FROM_ALL)
-  add_library(klib INTERFACE)
+  FetchContent_GetProperties(klib)
+  if(NOT klib_POPULATED)
+    FetchContent_Populate(klib)
+    
+    # add_subdirectory(${klib_SOURCE_DIR} ${klib_BINARY_DIR} EXCLUDE_FROM_ALL)
+    add_library(klib INTERFACE)
 
-  target_include_directories(klib INTERFACE ${klib_SOURCE_DIR})
+    target_include_directories(klib INTERFACE ${klib_SOURCE_DIR})
+  endif()
 endif()
-
 
 
 
