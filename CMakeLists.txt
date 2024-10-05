@@ -26,7 +26,6 @@ if (NOT bigbwt_POPULATED)
   
   FetchContent_GetProperties(bigbwt)
   if(NOT bigbwt_POPULATED)
-    message(STATUS "BIG-BWT is BUILDING!!!!")
     FetchContent_Populate(bigbwt)
     add_subdirectory(${bigbwt_SOURCE_DIR} ${bigbwt_BINARY_DIR})
       
